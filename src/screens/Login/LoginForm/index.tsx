@@ -1,6 +1,8 @@
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 import { Text, View } from "react-native";
 
+import { PublicStackParamsList } from "@/routes/PublicRoutes";
 import { AppButton } from "@/components/AppButton";
 import { AppInput } from "@/components/AppInput";
 
@@ -15,6 +17,8 @@ export const LoginForm = () => {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<LoginFormParams>();
+
+  const navigation = useNavigation<NavigationProp<PublicStackParamsList>>()
 
   return (
     <>
@@ -31,13 +35,13 @@ export const LoginForm = () => {
         label="Password"
         placeholder="********"
         leftIconName="lock"
-        secureTextEntry={true}
+        secureTextEntry
       />
       <View className="flex-1 justify-between mt-8 mb-6 min-h-[250px]">
         <AppButton iconName="arrow-forward">Login</AppButton>
         <View>
           <Text className="text-base mb-6 text-gray-300">Don't have an account?</Text>
-          <AppButton iconName="arrow-forward" variant="outline">
+          <AppButton onPress={() => navigation.navigate("Register")} iconName="arrow-forward" variant="outline">
             Sign Up
           </AppButton>
         </View>
