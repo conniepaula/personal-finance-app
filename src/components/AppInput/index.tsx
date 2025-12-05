@@ -11,6 +11,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { clsx } from "clsx";
 
 import { colors } from "@/shared/colors";
+import { ErrorMessage } from "../ErrorMessage";
 
 interface AppInputProps<T extends FieldValues> extends TextInputProps {
   control: Control<T>;
@@ -41,7 +42,10 @@ export const AppInput = <T extends FieldValues>({
     <Controller
       control={control}
       name={name}
-      render={({ field: { onChange, value }, fieldState: { error } }) => {
+      render={({
+        field: { onChange, value },
+        fieldState: { error, isDirty },
+      }) => {
         // TODO: show user the error message
         console.log(error);
         return (
@@ -89,6 +93,7 @@ export const AppInput = <T extends FieldValues>({
                 </TouchableOpacity>
               )}
             </TouchableOpacity>
+            {error && isDirty && <ErrorMessage>{error.message} </ErrorMessage>}
           </View>
         );
       }}
