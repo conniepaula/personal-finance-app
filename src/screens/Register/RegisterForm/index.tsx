@@ -1,11 +1,12 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 import { Text, View } from "react-native";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import { AppButton } from "@/components/AppButton";
 import { AppInput } from "@/components/AppInput";
 import { PublicStackParamsList } from "@/routes/PublicRoutes";
-
+import { schema } from "./schema";
 
 export interface RegisterFormParams {
   name: string;
@@ -19,9 +20,20 @@ export const RegisterForm = () => {
     control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<RegisterFormParams>();
+  } = useForm<RegisterFormParams>({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    resolver: yupResolver(schema),
+  });
 
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
+
+  const onSubmit = async () => {};
+
   return (
     <>
       <AppInput
@@ -55,7 +67,7 @@ export const RegisterForm = () => {
         secureTextEntry
       />
       <View className="flex-1 justify-between mt-8 mb-4 min-h-[180px]">
-        <AppButton>Sign Up</AppButton>
+        <AppButton onPress={handleSubmit(onSubmit)}>Sign Up</AppButton>
         <View>
           <Text className="text-base mb-6 text-gray-300">
             Already have an account?
