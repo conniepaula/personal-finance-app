@@ -1,14 +1,15 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
-import { Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { PublicStackParamsList } from "@/routes/PublicRoutes";
 import { AppButton } from "@/components/AppButton";
 import { AppInput } from "@/components/AppInput";
-import { schema } from "./schema";
 import { useAuthContext } from "@/context/auth.context";
-import { AxiosError } from "axios";
+import { useErrorHandler } from "@/shared/hooks/useErrorHandler";
+import { colors } from "@/shared/colors";
+import { schema } from "./schema";
 
 export interface LoginFormParams {
   email: string;
@@ -31,15 +32,13 @@ export const LoginForm = () => {
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
 
   const { handleAuthenticate } = useAuthContext();
+  const { handleError } = useErrorHandler();
 
   const onSubmit = async (userData: LoginFormParams) => {
-    // TODO: Improve error handling and user feedback
     try {
       await handleAuthenticate(userData);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error.response?.data);
-      }
+      handleError(error, "Failed to login. Please check your credentials.");
     }
   };
 
@@ -64,7 +63,7 @@ export const LoginForm = () => {
       />
       <View className="flex-1 justify-between mt-8 mb-6 min-h-[250px]">
         <AppButton onPress={handleSubmit(onSubmit)} iconName="arrow-forward">
-          Login
+          {isSubmitting ? <ActivityIndicator color={colors.white} /> : "Login"}
         </AppButton>
         <View>
           <Text className="text-base mb-6 text-gray-300">
