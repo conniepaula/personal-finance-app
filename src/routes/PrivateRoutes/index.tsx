@@ -1,6 +1,5 @@
 import { createStackNavigator } from "@react-navigation/stack";
 
-import { Register } from "@/screens/Register";
 import { Home } from "@/screens/Home";
 
 export type PrivateStackParamsList = {
