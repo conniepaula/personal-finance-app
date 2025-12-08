@@ -5,11 +5,13 @@ import {
   useContext,
   useState,
 } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import * as authService from "@/shared/services/personal-finance/auth.service";
 import { LoginFormParams } from "@/screens/Login/LoginForm";
 import { RegisterFormParams } from "@/screens/Register/RegisterForm";
 import { IUser } from "@/shared/interfaces/user-inteface";
+import { IAuthenticateResponse } from "@/shared/interfaces/https/authenticate-response";
 
 type AuthContextType = {
   user: IUser | null;
@@ -17,6 +19,7 @@ type AuthContextType = {
   handleAuthenticate: (params: LoginFormParams) => Promise<void>;
   handleRegister: (params: RegisterFormParams) => Promise<void>;
   handleLogout: () => void;
+  restoreUserSession: () => Promise<string | null>;
 };
 
 export const AuthContext = createContext<AuthContextType>(
@@ -29,17 +32,35 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const handleAuthenticate = async (userData: LoginFormParams) => {
     const { token, user } = await authService.authenticate(userData);
+    await AsyncStorage.setItem(
+      "personal-finance-user",
+      JSON.stringify({ user, token })
+    );
     setUser(user);
     setToken(token);
   };
 
   const handleRegister = async (formData: RegisterFormParams) => {
     const { token, user } = await authService.register(formData);
+    await AsyncStorage.setItem(
+      "personal-finance-user",
+      JSON.stringify({ user, token })
+    );
     setUser(user);
     setToken(token);
   };
 
   const handleLogout = () => {};
+
+  const restoreUserSession = async (): Promise<string | null> => {
+    const userData = await AsyncStorage.getItem("personal-finance-user");
+    if (userData) {
+      const { user, token } = JSON.parse(userData) as IAuthenticateResponse;
+      setUser(user);
+      setToken(token);
+    }
+    return userData;
+  };
 
   return (
     <AuthContext.Provider
@@ -49,6 +70,7 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
         handleAuthenticate,
         handleRegister,
         handleLogout,
+        restoreUserSession
       }}
     >
       {children}

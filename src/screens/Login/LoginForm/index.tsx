@@ -51,6 +51,8 @@ export const LoginForm = () => {
         label="Email"
         placeholder="yourname@example.com"
         leftIconName="email"
+        autoCapitalize="none"
+        keyboardType="email-address"
       />
       <AppInput
         control={control}
