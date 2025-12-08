@@ -50,7 +50,11 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
     setToken(token);
   };
 
-  const handleLogout = () => {};
+  const handleLogout = async () => {
+    await AsyncStorage.clear()
+    setUser(null);
+    setToken(null);
+  };
 
   const restoreUserSession = async (): Promise<string | null> => {
     const userData = await AsyncStorage.getItem("personal-finance-user");
