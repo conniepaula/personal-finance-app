@@ -7,6 +7,8 @@ import { PublicStackParamsList } from "@/routes/PublicRoutes";
 import { AppButton } from "@/components/AppButton";
 import { AppInput } from "@/components/AppInput";
 import { schema } from "./schema";
+import { useAuthContext } from "@/context/auth.context";
+import { AxiosError } from "axios";
 
 export interface LoginFormParams {
   email: string;
@@ -28,7 +30,18 @@ export const LoginForm = () => {
 
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
 
-  const onSubmit = async () => {};
+  const { handleAuthenticate } = useAuthContext();
+
+  const onSubmit = async (userData: LoginFormParams) => {
+    // TODO: Improve error handling and user feedback
+    try {
+      await handleAuthenticate(userData);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.response?.data);
+      }
+    }
+  };
 
   return (
     <>
@@ -38,6 +51,8 @@ export const LoginForm = () => {
         label="Email"
         placeholder="yourname@example.com"
         leftIconName="email"
+        autoCapitalize="none"
+        keyboardType="email-address"
       />
       <AppInput
         control={control}
