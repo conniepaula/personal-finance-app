@@ -1,5 +1,3 @@
-import { LoginFormParams } from "@/screens/Login/LoginForm";
-import { RegisterFormParams } from "@/screens/Register/RegisterForm";
 import {
   createContext,
   FC,
@@ -8,11 +6,16 @@ import {
   useState,
 } from "react";
 
+import * as authService from "@/shared/services/personal-finance/auth.service";
+import { LoginFormParams } from "@/screens/Login/LoginForm";
+import { RegisterFormParams } from "@/screens/Register/RegisterForm";
+import { IUser } from "@/shared/interfaces/user-inteface";
+
 type AuthContextType = {
-  user: null;
+  user: IUser |null;
   token: string | null;
-  handleAuthentication: (params: LoginFormParams) => Promise<void>;
-  handleRegistration: (params: RegisterFormParams) => Promise<void>;
+  handleAuthenticate: (params: LoginFormParams) => Promise<void>;
+  handleRegister: (params: RegisterFormParams) => Promise<void>;
   handleLogout: () => void;
 };
 
@@ -21,14 +24,16 @@ export const AuthContext = createContext<AuthContextType>(
 );
 
 export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<IUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
-  const handleAuthentication = async ({ email, password }: LoginFormParams) => {
-    // TODO: Implement login logic here
+  const handleAuthenticate = async (userData: LoginFormParams) => {
+    const { token, user } = await authService.authenticate(userData);
+    setUser(user);
+    setToken(token);
   };
 
-  const handleRegistration = async (params: RegisterFormParams) => {};
+  const handleRegister = async (params: RegisterFormParams) => {};
 
   const handleLogout = () => {};
 
@@ -37,8 +42,8 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
       value={{
         user,
         token,
-        handleAuthentication,
-        handleRegistration,
+        handleAuthenticate,
+        handleRegister,
         handleLogout,
       }}
     >
