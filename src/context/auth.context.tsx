@@ -12,7 +12,7 @@ import { RegisterFormParams } from "@/screens/Register/RegisterForm";
 import { IUser } from "@/shared/interfaces/user-inteface";
 
 type AuthContextType = {
-  user: IUser |null;
+  user: IUser | null;
   token: string | null;
   handleAuthenticate: (params: LoginFormParams) => Promise<void>;
   handleRegister: (params: RegisterFormParams) => Promise<void>;
@@ -33,7 +33,11 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
     setToken(token);
   };
 
-  const handleRegister = async (params: RegisterFormParams) => {};
+  const handleRegister = async (formData: RegisterFormParams) => {
+    const { token, user } = await authService.register(formData);
+    setUser(user);
+    setToken(token);
+  };
 
   const handleLogout = () => {};
 

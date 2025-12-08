@@ -7,6 +7,8 @@ import { AppButton } from "@/components/AppButton";
 import { AppInput } from "@/components/AppInput";
 import { PublicStackParamsList } from "@/routes/PublicRoutes";
 import { schema } from "./schema";
+import { useAuthContext } from "@/context/auth.context";
+import { AxiosError } from "axios";
 
 export interface RegisterFormParams {
   name: string;
@@ -32,7 +34,17 @@ export const RegisterForm = () => {
 
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
 
-  const onSubmit = async () => {};
+  const { handleRegister } = useAuthContext();
+
+  const onSubmit = async (formData: RegisterFormParams) => {
+    try {
+      await handleRegister(formData);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.response?.data);
+      }
+    }
+  };
 
   return (
     <>
@@ -49,6 +61,8 @@ export const RegisterForm = () => {
         label="Email"
         placeholder="yourname@example.com"
         leftIconName="email"
+        autoCapitalize="none"
+        keyboardType="email-address"
       />
       <AppInput
         control={control}
