@@ -1,13 +1,30 @@
-import { AppButton } from "@/components/AppButton";
-import { useAuthContext } from "@/context/auth.context";
-import { View } from "react-native";
+import { AppHeader } from "@/components/AppHeader";
+import { useTransactionContext } from "@/context/transaction.context";
+import { useErrorHandler } from "@/shared/hooks/useErrorHandler";
+import { useEffect } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const Home = () => {
-  const { handleLogout } = useAuthContext();
+  const { fetchCategories } = useTransactionContext();
+  const { handleError } = useErrorHandler();
 
+  const handleFetchCategories = async () => {
+    try {
+      await fetchCategories();
+    } catch (error) {
+      handleError(error, "Failed to fetch transaction categories.");
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      await handleFetchCategories();
+    })();
+  }, []);
+  
   return (
-    <View className="flex-1 items-center justify-center">
-      <AppButton onPress={handleLogout}>Log Out</AppButton>
-    </View>
+    <SafeAreaView className="flex-1 bg-background-primary">
+      <AppHeader />
+    </SafeAreaView>
   );
 };
