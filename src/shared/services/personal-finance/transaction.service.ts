@@ -37,3 +37,7 @@ export const getTransactions = async (
 
   return data;
 };
+
+export const deleteTransaction = async (transactionId: number) => {
+  await personalFinanceApi.delete(`/transaction/${transactionId}`);
+}
