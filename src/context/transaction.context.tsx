@@ -12,11 +12,13 @@ import * as transactionService from "@/shared/services/personal-finance/transact
 import { ICreateTransactionRequest } from "@/shared/interfaces/https/create-transaction-request";
 import { Transaction } from "@/shared/interfaces/transaction";
 import { TotalTransactions } from "@/shared/interfaces/total-transactions";
+import { IUpdateTransactionRequest } from "@/shared/interfaces/https/update-transaction-request";
 
 export type TransactionContextType = {
   fetchCategories: () => Promise<void>;
   categories: Array<ITransactionCategoryResponse>;
   createTransaction: (transaction: ICreateTransactionRequest) => Promise<void>;
+  updateTransaction: (transaction: IUpdateTransactionRequest) => Promise<void>;
   fetchTransactions: () => Promise<void>;
   totalTransactions: TotalTransactions;
   transactions: Array<Transaction>;
@@ -49,6 +51,10 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
     await transactionService.createTransaction(transaction);
   };
 
+const updateTransaction = async (transaction: IUpdateTransactionRequest) => {
+    await transactionService.updateTransaction(transaction);
+}
+
   const fetchTransactions = useCallback(async () => {
     const transactionResponse = await transactionService.getTransactions({
       page: 1,
@@ -66,6 +72,7 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
         categories,
         transactions,
         createTransaction,
+        updateTransaction,
         fetchTransactions,
         totalTransactions,
       }}

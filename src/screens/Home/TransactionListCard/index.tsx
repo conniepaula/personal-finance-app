@@ -9,6 +9,8 @@ import { colors } from "@/shared/colors";
 import { TransactionTypes } from "@/shared/enums/transaction-types";
 import clsx from "clsx";
 import { RightAction } from "./RightAction";
+import { LeftAction } from "./LeftAction";
+import { MoneyMapper } from "@/shared/utils/money-mapper";
 
 interface TransactionListCardProps {
   transaction: Transaction;
@@ -28,8 +30,10 @@ export const TransactionListCard: FC<TransactionListCardProps> = ({
         width: "90%",
         marginBottom: 16,
       }}
-      renderRightActions={() => <RightAction transactionId={transaction.id}/>}
+      renderRightActions={() => <RightAction transactionId={transaction.id} />}
       overshootRight={false}
+      renderLeftActions={() => <LeftAction transaction={transaction} />}
+      overshootLeft={false}
     >
       <View className="h-[140] bg-background-tertiary rounded-[6] p-6">
         <Text className="text-white text-base">{transaction.description}</Text>
@@ -39,8 +43,8 @@ export const TransactionListCard: FC<TransactionListCardProps> = ({
             isExpense ? "text-accent-red" : "text-accent-brand-light"
           )}
         >
-          £{isExpense && "-"}
-          {transaction.value.toFixed(2)}
+          {isExpense && "-"}
+          {MoneyMapper(transaction.value, "en-GB", "GBP")}
         </Text>
         <View className="flex-row w-full justify-between items-center">
           <View className="items-center flex-row mt-3">

@@ -7,6 +7,7 @@ import {
   IGetTransactionsParams,
 } from "@/shared/interfaces/https/get-transaction";
 import { ITransactionCategoryResponse } from "@/shared/interfaces/https/transaction-category-response";
+import { IUpdateTransactionRequest } from "@/shared/interfaces/https/update-transaction-request";
 
 export const getTransactionCategories = async (): Promise<
   Array<ITransactionCategoryResponse>
@@ -41,3 +42,7 @@ export const getTransactions = async (
 export const deleteTransaction = async (transactionId: number) => {
   await personalFinanceApi.delete(`/transaction/${transactionId}`);
 }
+
+export const updateTransaction = async (transaction: IUpdateTransactionRequest) => {
+  await personalFinanceApi.put("/transaction", transaction);
+};
