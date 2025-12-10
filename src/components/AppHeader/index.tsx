@@ -1,6 +1,6 @@
-import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+
 import { colors } from "@/shared/colors";
 import { useAuthContext } from "@/context/auth.context";
 import { useBottomSheetContext } from "@/context/bottomsheet.context";
@@ -10,7 +10,7 @@ export const AppHeader = () => {
     const { handleLogout } = useAuthContext();
     const {openBottomSheet} = useBottomSheetContext();
     return (
-    <View className="w-full flex-row p-8 justify-between">
+    <View className="w-full flex-row p-8 justify-between bg-background-primary">
       <View>
         <Image
           source={require("@/assets/logo.png")}
